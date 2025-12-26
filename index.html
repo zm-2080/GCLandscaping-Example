@@ -1,0 +1,646 @@
+import React, { useState, useEffect } from 'react';
+import { 
+  Menu, X, Phone, Mail, MapPin, Clock, 
+  Award, Star, Facebook, Instagram, Linkedin, 
+  ArrowRight, PenTool, Hammer, Sprout, 
+  CheckCircle2, ChevronDown, Send
+} from 'lucide-react';
+import { motion, AnimatePresence } from "framer-motion";
+
+/**
+ * GLOBAL STYLES & CONFIGURATION
+ * Matches the "Gold Coast Landscaping" aesthetic: Forest Green, Beige, Playfair Display.
+ */
+const GlobalStyles = () => (
+  <style>{`
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap');
+    
+    :root {
+      --forest: #1a3c34;  /* Deep Forest Green */
+      --sage: #8da399;    /* Muted Sage */
+      --cream: #fbfbf9;   /* Off-white Cream */
+      --beige: #f4f1ea;   /* Warm Beige */
+      --gold: #d4af37;    /* Subtle Gold Accent */
+      --charcoal: #2c2c2c;
+    }
+
+    body {
+      background-color: var(--cream);
+      color: var(--charcoal);
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3, h4, .font-playfair {
+      font-family: 'Playfair Display', serif;
+    }
+
+    /* Smooth Scrolling */
+    html {
+      scroll-behavior: smooth;
+    }
+
+    .btn-primary {
+      background-color: var(--forest);
+      color: white;
+      transition: all 0.3s ease;
+    }
+    .btn-primary:hover {
+      background-color: #142f29;
+      transform: translateY(-2px);
+    }
+
+    .btn-outline {
+      border: 2px solid var(--forest);
+      color: var(--forest);
+      background: transparent;
+      transition: all 0.3s ease;
+    }
+    .btn-outline:hover {
+      background-color: var(--forest);
+      color: white;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 10px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--sage);
+      border-radius: 5px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--forest);
+    }
+  `}</style>
+);
+
+const App = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [formStatus, setFormStatus] = useState('idle');
+
+  // Handle Scroll for text color transition (maintaining floating look)
+  useEffect(() => {
+    const handleScroll = () => {
+      // Threshold set to when we move past the hero section
+      setScrolled(window.scrollY > 100);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const scrollTo = (id) => {
+    const el = document.getElementById(id);
+    if (el) {
+      const navHeight = 80;
+      window.scrollTo({ top: el.offsetTop - navHeight, behavior: 'smooth' });
+      setIsMenuOpen(false);
+    }
+  };
+
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+    setFormStatus('sending');
+    setTimeout(() => {
+      setFormStatus('success');
+      setTimeout(() => setFormStatus('idle'), 3000);
+    }, 2000);
+  };
+
+  return (
+    <div className="relative w-full">
+      <GlobalStyles />
+
+      {/* NAVIGATION 
+          Always transparent background. 
+          Text color transitions for visibility as it "floats" over different sections.
+      */}
+      <nav 
+        className="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-transparent py-8"
+      >
+        <div className="container mx-auto px-6 flex items-center justify-between">
+          <div 
+            onClick={() => scrollTo('hero')} 
+            className={`font-playfair text-2xl font-bold cursor-pointer transition-colors flex-shrink-0 drop-shadow-sm ${
+              scrolled ? 'text-[#1a3c34]' : 'text-white'
+            }`}
+          >
+            Gold Coast Landscaping
+          </div>
+
+          {/* Desktop Menu - "Floating" words with responsive spacing */}
+          <div className="hidden md:flex items-center space-x-12 ml-12">
+            {['About', 'Services', 'Projects', 'Testimonials'].map((item) => (
+              <button
+                key={item}
+                onClick={() => scrollTo(item.toLowerCase())}
+                className={`font-semibold transition-colors hover:opacity-80 whitespace-nowrap drop-shadow-sm ${
+                  scrolled ? 'text-[#1a3c34]' : 'text-white'
+                }`}
+              >
+                {item}
+              </button>
+            ))}
+            <button
+              onClick={() => scrollTo('contact')}
+              className={`px-7 py-3 rounded-full font-bold transition-all whitespace-nowrap shadow-lg ${
+                scrolled 
+                  ? 'bg-[#1a3c34] text-white hover:bg-[#142f29] hover:scale-105' 
+                  : 'bg-white text-[#1a3c34] hover:bg-gray-100 hover:scale-105'
+              }`}
+            >
+              Get in Touch
+            </button>
+          </div>
+
+          {/* Mobile Toggle */}
+          <div className="md:hidden">
+            <button 
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className={`transition-colors p-2 rounded-full ${scrolled ? 'text-[#1a3c34] bg-white/20' : 'text-white bg-black/10'}`}
+            >
+              {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
+            </button>
+          </div>
+        </div>
+
+        {/* Mobile Menu Dropdown */}
+        <AnimatePresence>
+          {isMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="md:hidden absolute top-24 left-6 right-6 bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-100"
+            >
+              <div className="flex flex-col p-8 space-y-6">
+                {['About', 'Services', 'Projects', 'Testimonials'].map((item) => (
+                  <button
+                    key={item}
+                    onClick={() => scrollTo(item.toLowerCase())}
+                    className="text-left text-xl font-bold text-[#1a3c34] border-b border-gray-50 pb-2"
+                  >
+                    {item}
+                  </button>
+                ))}
+                <button
+                  onClick={() => scrollTo('contact')}
+                  className="w-full bg-[#1a3c34] text-white py-4 rounded-2xl font-bold shadow-lg"
+                >
+                  Get in Touch
+                </button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </nav>
+
+      {/* HERO SECTION */}
+      <section id="hero" className="relative h-screen flex items-center justify-center">
+        <div 
+          className="absolute inset-0 z-0"
+          style={{
+            backgroundImage: 'url("https://images.unsplash.com/photo-1621290130382-74549a53d8c0?auto=format&fit=crop&q=80&w=2400")',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center'
+          }}
+        />
+        <div className="absolute inset-0 bg-black/35 z-0" />
+
+        <div className="relative z-10 text-center px-4 max-w-5xl mx-auto mt-16">
+          <motion.h1 
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="font-playfair text-5xl md:text-7xl lg:text-8xl font-bold text-white mb-6 leading-tight drop-shadow-lg"
+          >
+            <span className="italic">Shaping Nature.</span><br />
+            Elevating Spaces.
+          </motion.h1>
+          
+          <motion.p 
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="text-xl md:text-2xl text-[#fbfbf9] font-light max-w-2xl mx-auto mb-10 drop-shadow-md"
+          >
+            Transforming Gold Coast properties into extraordinary outdoor living experiences.
+          </motion.p>
+          
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+          >
+            <button 
+              onClick={() => scrollTo('contact')}
+              className="bg-[#1a3c34] text-white hover:bg-[#142f29] px-10 py-4 rounded-full text-lg font-semibold transition-transform hover:scale-105 shadow-xl"
+            >
+              Get a Free Quote
+            </button>
+          </motion.div>
+        </div>
+        
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1, duration: 1 }}
+          className="absolute bottom-10 left-1/2 transform -translate-x-1/2 text-white animate-bounce"
+        >
+          <ChevronDown size={32} />
+        </motion.div>
+      </section>
+
+      {/* ABOUT SECTION */}
+      <section id="about" className="py-24 bg-[#f4f1ea]">
+        <div className="container mx-auto px-6">
+          <div className="grid md:grid-cols-2 gap-16 items-center">
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+            >
+              <h2 className="font-playfair text-4xl md:text-5xl font-bold text-[#1a3c34] mb-8 leading-tight">
+                Building landscapes for the <span className="italic text-[#8da399]">Gold Coast Lifestyle</span>
+              </h2>
+              <div className="space-y-6 text-lg text-[#2c2c2c] leading-relaxed">
+                <p>
+                  Gold Coast Landscaping are experts in the landscape construction industry. A local <strong>family-owned business</strong> with over 25 years of experience in structural landscaping, we create dream outdoor spaces that exceed expectations.
+                </p>
+                <p>
+                  We service anywhere from <strong>Coolangatta to Brisbane</strong> and all surrounding areas. Our professional team works closely with clients throughout the design stages, ensuring complete satisfaction with every project.
+                </p>
+              </div>
+              
+              <div className="flex items-center space-x-4 mt-8 mb-8">
+                <div className="bg-[#8da399] p-3 rounded-full shadow-md">
+                  <Award className="text-white" size={24} />
+                </div>
+                <div>
+                  <h3 className="font-bold text-[#1a3c34] text-lg">QBCC Licensed</h3>
+                  <p className="text-[#2c2c2c]">Builders License #15088068</p>
+                </div>
+              </div>
+
+              <button 
+                onClick={() => scrollTo('contact')}
+                className="btn-outline px-8 py-3 rounded-full font-semibold border-2 border-[#1a3c34]"
+              >
+                Learn More
+              </button>
+            </motion.div>
+            
+            <motion.div 
+              className="relative"
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+            >
+              <div className="relative rounded-2xl overflow-hidden shadow-2xl">
+                <img 
+                  src="https://images.unsplash.com/photo-1592595896551-12b371d546d5?auto=format&fit=crop&q=80&w=800" 
+                  alt="Manicured Garden Landscaping" 
+                  className="w-full h-auto object-cover transform hover:scale-105 transition-transform duration-700"
+                />
+              </div>
+              <div className="absolute -bottom-8 -left-8 bg-white p-8 rounded-tr-3xl shadow-xl border-l-4 border-[#1a3c34]">
+                <div className="text-center">
+                  <div className="text-4xl font-bold text-[#1a3c34] font-playfair">25+</div>
+                  <div className="text-sm text-[#8da399] uppercase tracking-wider font-semibold">Years Experience</div>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* SERVICES SECTION */}
+      <section id="services" className="py-24 bg-white">
+        <div className="container mx-auto px-6">
+          <motion.div 
+            className="text-center mb-20"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <h2 className="font-playfair text-4xl md:text-5xl font-bold text-[#1a3c34] mb-4">
+              Our <span className="italic text-[#8da399]">Services</span>
+            </h2>
+            <div className="w-24 h-1 bg-[#1a3c34] mx-auto rounded-full"></div>
+          </motion.div>
+          
+          <div className="grid lg:grid-cols-3 gap-12 max-w-6xl mx-auto mb-20">
+            {[
+              {
+                icon: <PenTool size={32} />,
+                title: "Landscape Design",
+                desc: "We combine a balance between beautiful environments and functional spaces that meet the needs of the modern Australian family."
+              },
+              {
+                icon: <Hammer size={32} />,
+                title: "Landscape Construction",
+                desc: "We thoughtfully bring your vision to life, being mindful to minimize impact on your day-to-day living, on budget and on time."
+              },
+              {
+                icon: <Sprout size={32} />,
+                title: "Garden Maintenance",
+                desc: "We select durable, low-maintenance plants and materials. A tailored maintenance plan ensures your garden flourishes in every season."
+              }
+            ].map((service, idx) => (
+              <motion.div
+                key={idx}
+                className="text-center p-8 rounded-2xl hover:bg-[#fbfbf9] transition-colors border border-transparent hover:border-gray-100"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: idx * 0.1 }}
+              >
+                <div className="inline-flex items-center justify-center w-16 h-16 bg-[#1a3c34] text-white rounded-full mb-6 shadow-lg">
+                  {service.icon}
+                </div>
+                <h3 className="font-playfair text-2xl font-bold text-[#1a3c34] mb-4">{service.title}</h3>
+                <p className="text-[#2c2c2c] leading-relaxed">{service.desc}</p>
+              </motion.div>
+            ))}
+          </div>
+          
+          <div className="bg-[#f4f1ea] rounded-3xl p-10 md:p-16">
+            <h3 className="font-playfair text-3xl font-bold text-[#1a3c34] mb-12 text-center">Specialized Services</h3>
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+              {[
+                { title: "Sports Courts", img: "https://images.unsplash.com/photo-1628153205342-6b95c3285149?auto=format&fit=crop&q=80&w=400", desc: "Tennis & Basketball courts" },
+                { title: "Inground Trampolines", img: "https://images.unsplash.com/photo-1595166672322-1d5964858ba5?auto=format&fit=crop&q=80&w=400", desc: "Safe family entertainment" },
+                { title: "Retaining Walls", img: "https://images.unsplash.com/photo-1533664539169-2f22e4d08b3e?auto=format&fit=crop&q=80&w=400", desc: "Structural & decorative" },
+                { title: "Paving & Pathways", img: "https://images.unsplash.com/photo-1524168936991-8d264426532d?auto=format&fit=crop&q=80&w=400", desc: "Premium driveways" }
+              ].map((item, idx) => (
+                <div key={idx} className="group bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all">
+                  <div className="h-48 overflow-hidden">
+                    <img src={item.img} alt={item.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                  </div>
+                  <div className="p-6">
+                    <h4 className="font-playfair text-lg font-bold text-[#1a3c34] mb-2">{item.title}</h4>
+                    <p className="text-sm text-gray-600">{item.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* PROJECTS SECTION */}
+      <section id="projects" className="py-24 bg-[#1a3c34] text-white">
+        <div className="container mx-auto px-6">
+          <div className="text-center mb-16">
+            <h2 className="font-playfair text-4xl md:text-5xl font-bold mb-6">
+              <span className="italic text-[#8da399]">Featured</span> Projects
+            </h2>
+            <p className="text-lg text-gray-300 max-w-3xl mx-auto font-light">
+              Our goal is to improve outdoor space usability. We focus on delivering not just visually appealing outcomes, but creating lasting experiences our clients cherish.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[
+              { title: "Paradise Palms Estate", desc: "Luxury pool landscaping", img: "https://images.unsplash.com/photo-1572331165267-854da2b00dc1?auto=format&fit=crop&q=80&w=600" },
+              { title: "Waterfront Sanctuary", desc: "Elegant water features", img: "https://images.unsplash.com/photo-1566737236500-c8ac43014a67?auto=format&fit=crop&q=80&w=600" },
+              { title: "Coastal Retreat", desc: "Modern entertainment", img: "https://images.unsplash.com/photo-1507089947368-19c1da9775ae?auto=format&fit=crop&q=80&w=600" },
+              { title: "Hillside Haven", desc: "Structural retaining walls", img: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=600" },
+              { title: "Grand Entrance", desc: "Premium pathway installation", img: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&q=80&w=600" },
+              { title: "Active Family Space", desc: "Professional sports court", img: "https://images.unsplash.com/photo-1580587771525-78b9dba3b91d?auto=format&fit=crop&q=80&w=600" }
+            ].map((project, idx) => (
+              <motion.div
+                key={idx}
+                className="group relative h-80 rounded-xl overflow-hidden cursor-pointer"
+                initial={{ opacity: 0, scale: 0.95 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: idx * 0.1 }}
+              >
+                <img 
+                  src={project.img} 
+                  alt={project.title} 
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
+                />
+                <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors" />
+                <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/90 to-transparent">
+                  <h3 className="font-playfair text-2xl font-bold text-white mb-1">{project.title}</h3>
+                  <p className="text-gray-300 text-sm">{project.desc}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* TESTIMONIALS SECTION */}
+      <section id="testimonials" className="py-24 bg-[#f4f1ea]">
+        <div className="container mx-auto px-6">
+          <div className="text-center mb-16">
+            <h2 className="font-playfair text-4xl md:text-5xl font-bold text-[#1a3c34] mb-4">
+              What Our Clients Say
+            </h2>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {[
+              {
+                name: "Sarah Mitchell",
+                loc: "Broadbeach Waters",
+                text: "Our passion for landscaping drives us to approach each project with unmatched care. We believe that every garden tells a story.",
+                initial: "S"
+              },
+              {
+                name: "Michael Thompson",
+                loc: "Currumbin",
+                text: "The team transformed our backyard into an incredible outdoor living space. Their attention to detail exceeded our expectations.",
+                initial: "M"
+              },
+              {
+                name: "Jessica Clarke",
+                loc: "Burleigh Heads",
+                text: "From design to completion, the process was seamless. The team's expertise in structural landscaping really shows.",
+                initial: "J"
+              }
+            ].map((t, idx) => (
+              <div key={idx} className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100 relative">
+                <div className="text-[#d4af37] flex gap-1 mb-4">
+                  {[...Array(5)].map((_, i) => <Star key={i} size={16} fill="currentColor" />)}
+                </div>
+                <p className="text-[#2c2c2c] italic mb-8 leading-relaxed">"{t.text}"</p>
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-[#1a3c34] text-white rounded-full flex items-center justify-center font-playfair font-bold text-lg">
+                    {t.initial}
+                  </div>
+                  <div>
+                    <div className="font-bold text-[#1a3c34]">{t.name}</div>
+                    <div className="text-sm text-gray-500">{t.loc}</div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CONTACT SECTION */}
+      <section id="contact" className="py-24 bg-[#1a3c34]">
+        <div className="container mx-auto px-6">
+          <div className="text-center mb-16">
+            <h2 className="font-playfair text-4xl md:text-5xl font-bold text-white mb-4">
+              Ready to turn your <span className="italic text-[#8da399]">vision</span> into reality?
+            </h2>
+            <p className="text-gray-300 text-lg max-w-2xl mx-auto">
+              Get in touch with our team to discuss your landscaping project. We provide free quotes and consultations for all Gold Coast areas.
+            </p>
+          </div>
+
+          <div className="grid lg:grid-cols-2 gap-16 max-w-6xl mx-auto">
+            <div className="text-white space-y-8">
+              <h3 className="font-playfair text-3xl font-bold mb-8">Contact Information</h3>
+              <div className="flex items-start gap-6">
+                <div className="bg-white/10 p-4 rounded-xl">
+                  <Phone size={24} className="text-[#8da399]" />
+                </div>
+                <div>
+                  <h4 className="font-bold text-lg mb-1">Phone</h4>
+                  <p className="text-gray-300">0408 063 105</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-6">
+                <div className="bg-white/10 p-4 rounded-xl">
+                  <Mail size={24} className="text-[#8da399]" />
+                </div>
+                <div>
+                  <h4 className="font-bold text-lg mb-1">Email</h4>
+                  <p className="text-gray-300">admin@goldcoastlandscapes.com.au</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-6">
+                <div className="bg-white/10 p-4 rounded-xl">
+                  <MapPin size={24} className="text-[#8da399]" />
+                </div>
+                <div>
+                  <h4 className="font-bold text-lg mb-1">Service Areas</h4>
+                  <p className="text-gray-300">Coolangatta to Brisbane and surrounding areas</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-6">
+                <div className="bg-white/10 p-4 rounded-xl">
+                  <Clock size={24} className="text-[#8da399]" />
+                </div>
+                <div>
+                  <h4 className="font-bold text-lg mb-1">Hours</h4>
+                  <p className="text-gray-300">Mon - Fri: 7:00 AM - 5:00 PM</p>
+                  <p className="text-gray-300">Sat: 8:00 AM - 4:00 PM</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-3xl p-10 shadow-2xl">
+              <h3 className="font-playfair text-2xl font-bold text-[#1a3c34] mb-8">Get Your Free Quote</h3>
+              <form onSubmit={handleFormSubmit} className="space-y-6">
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">Name *</label>
+                    <input type="text" required className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-[#1a3c34] focus:ring-1 focus:ring-[#1a3c34] outline-none transition-all" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">Phone *</label>
+                    <input type="tel" required className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-[#1a3c34] focus:ring-1 focus:ring-[#1a3c34] outline-none transition-all" />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">Email *</label>
+                  <input type="email" required className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-[#1a3c34] focus:ring-1 focus:ring-[#1a3c34] outline-none transition-all" />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">Project Type</label>
+                  <select className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-[#1a3c34] focus:ring-1 focus:ring-[#1a3c34] outline-none transition-all bg-white">
+                    <option>Landscape Design</option>
+                    <option>Landscape Construction</option>
+                    <option>Garden Maintenance</option>
+                    <option>Retaining Walls</option>
+                    <option>Paving & Pathways</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">Message *</label>
+                  <textarea rows="4" className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-[#1a3c34] focus:ring-1 focus:ring-[#1a3c34] outline-none transition-all"></textarea>
+                </div>
+                <button 
+                  type="submit" 
+                  disabled={formStatus === 'sending'}
+                  className={`w-full py-4 rounded-lg font-bold text-lg text-white transition-all flex items-center justify-center gap-2 ${
+                    formStatus === 'success' ? 'bg-green-600' : 'bg-[#1a3c34] hover:bg-[#142f29]'
+                  }`}
+                >
+                  {formStatus === 'idle' && <>Send Message <Send size={20} /></>}
+                  {formStatus === 'sending' && "Sending..."}
+                  {formStatus === 'success' && <><CheckCircle2 size={20} /> Sent Successfully!</>}
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* FOOTER */}
+      <footer className="bg-[#111] text-white py-16 border-t border-gray-800">
+        <div className="container mx-auto px-6">
+          <div className="grid md:grid-cols-4 gap-12 mb-12">
+            <div className="space-y-6">
+              <h3 className="font-playfair text-2xl font-bold">Gold Coast Landscaping</h3>
+              <p className="text-gray-400 leading-relaxed">
+                A family-owned business transforming outdoor spaces with 25+ years of professional landscaping experience on the Gold Coast.
+              </p>
+              <div className="flex gap-4">
+                <a href="#" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#1a3c34] transition-colors"><Facebook size={20} /></a>
+                <a href="#" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#1a3c34] transition-colors"><Instagram size={20} /></a>
+                <a href="#" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#1a3c34] transition-colors"><Linkedin size={20} /></a>
+              </div>
+            </div>
+            <div>
+              <h4 className="font-bold text-lg mb-6 text-gray-200">Services</h4>
+              <ul className="space-y-4 text-gray-400">
+                <li className="hover:text-white cursor-pointer transition-colors">Landscape Design</li>
+                <li className="hover:text-white cursor-pointer transition-colors">Construction</li>
+                <li className="hover:text-white cursor-pointer transition-colors">Garden Maintenance</li>
+                <li className="hover:text-white cursor-pointer transition-colors">Retaining Walls</li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-bold text-lg mb-6 text-gray-200">Quick Links</h4>
+              <ul className="space-y-4 text-gray-400">
+                <li onClick={() => scrollTo('about')} className="hover:text-white cursor-pointer transition-colors">About Us</li>
+                <li onClick={() => scrollTo('projects')} className="hover:text-white cursor-pointer transition-colors">Our Projects</li>
+                <li onClick={() => scrollTo('testimonials')} className="hover:text-white cursor-pointer transition-colors">Testimonials</li>
+                <li onClick={() => scrollTo('contact')} className="hover:text-white cursor-pointer transition-colors">Contact</li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-bold text-lg mb-6 text-gray-200">Credentials</h4>
+              <ul className="space-y-4 text-gray-400">
+                <li className="flex items-center gap-2"><Award size={18} className="text-[#8da399]" /> QBCC Licensed</li>
+                <li>Builders License #15088068</li>
+                <li>Fully Insured</li>
+                <li>Australian Family Owned</li>
+              </ul>
+            </div>
+          </div>
+          <div className="border-t border-gray-800 pt-8 text-center text-gray-500 text-sm">
+            &copy; 2025 Gold Coast Landscaping. All rights reserved. | Privacy Policy | Terms of Service
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+};
+
+export default App;
