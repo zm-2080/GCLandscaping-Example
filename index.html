@@ -133,7 +133,7 @@
 
     <!-- HERO SECTION -->
     <section id="hero" class="relative h-screen flex items-center justify-center">
-        <!-- Hero background div -->
+        <!-- Hero background -->
         <div id="hero-image" class="absolute inset-0 z-0 hero-bg" 
              data-bg-src="raelle-gann-owens-JUNyb_cetns-unsplash_1751973834608.jpg">
         </div>
@@ -188,7 +188,7 @@
                 
                 <div class="relative fade-in">
                     <div class="relative rounded-2xl overflow-hidden shadow-2xl">
-                        <!-- About Section Image: Fixed extension -->
+                        <!-- About Section Image: Golf Course background -->
                         <img data-src="Golf Course_1751965059910.jpg" alt="High-end landscaping" class="w-full h-auto object-cover transform hover:scale-105 transition-transform duration-700 service-img">
                     </div>
                     <div class="absolute -bottom-8 -left-8 bg-white p-8 rounded-tr-3xl shadow-xl border-l-4 border-forest">
@@ -251,7 +251,7 @@
                     </div>
                     <div class="group bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all">
                         <div class="h-48 overflow-hidden">
-                            <!-- Handled the space in filename correctly -->
+                            <!-- Correct path for inground trampolines -->
                             <img data-src="in ground trampoline _1751972693626.jpg" alt="Inground Trampolines" class="service-img group-hover:scale-110 transition-transform duration-500">
                         </div>
                         <div class="p-6">
@@ -295,6 +295,7 @@
             </div>
 
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Project 1: Paradise Palms Estate -->
                 <div class="group relative h-80 rounded-xl overflow-hidden cursor-pointer fade-in">
                     <img data-src="Estate_1751965059910.jpg" alt="Paradise Palms Estate" class="service-img group-hover:scale-110 transition-transform duration-700">
                     <div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors"></div>
@@ -303,14 +304,16 @@
                         <p class="text-gray-300 text-sm">Luxury pool landscaping</p>
                     </div>
                 </div>
+                <!-- Project 2: Waterfront Sanctuary (AVIF Extension) -->
                 <div class="group relative h-80 rounded-xl overflow-hidden cursor-pointer fade-in">
-                    <img data-src="image_a48ce7.jpg" alt="Waterfront Sanctuary" class="service-img group-hover:scale-110 transition-transform duration-700">
+                    <img data-src="Waterfront garden_1751965059909.avif" alt="Waterfront Sanctuary" class="service-img group-hover:scale-110 transition-transform duration-700">
                     <div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors"></div>
                     <div class="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/90 to-transparent">
                         <h3 class="font-playfair text-2xl font-bold text-white mb-1">Waterfront Sanctuary</h3>
                         <p class="text-gray-300 text-sm">Elegant water features</p>
                     </div>
                 </div>
+                <!-- Project 3: Coastal Retreat -->
                 <div class="group relative h-80 rounded-xl overflow-hidden cursor-pointer fade-in">
                     <img data-src="Coastal Garden image_1751965059908.jpg" alt="Coastal Retreat" class="service-img group-hover:scale-110 transition-transform duration-700">
                     <div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors"></div>
@@ -319,7 +322,7 @@
                         <p class="text-gray-300 text-sm">Modern entertainment</p>
                     </div>
                 </div>
-                <!-- Additional projects from your assets -->
+                <!-- Project 4: Hillside Haven -->
                 <div class="group relative h-80 rounded-xl overflow-hidden cursor-pointer fade-in">
                     <img data-src="image_a48cc9.jpg" alt="Hillside Haven" class="service-img group-hover:scale-110 transition-transform duration-700">
                     <div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors"></div>
@@ -328,6 +331,7 @@
                         <p class="text-gray-300 text-sm">Structural retaining walls</p>
                     </div>
                 </div>
+                <!-- Project 5: Grand Entrance -->
                 <div class="group relative h-80 rounded-xl overflow-hidden cursor-pointer fade-in">
                     <img data-src="image_a48d1f.jpg" alt="Grand Entrance" class="service-img group-hover:scale-110 transition-transform duration-700">
                     <div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors"></div>
@@ -336,8 +340,9 @@
                         <p class="text-gray-300 text-sm">Premium pathway system</p>
                     </div>
                 </div>
+                <!-- Project 6: Active Family Space -->
                 <div class="group relative h-80 rounded-xl overflow-hidden cursor-pointer fade-in">
-                    <img data-src="image_a48d3c.jpg" alt="Active Family Space" class="service-img group-hover:scale-110 transition-transform duration-700">
+                    <img data-src="image_a48d3c.jpg" alt="Active Family Space" class="service-img group-hover:scale-110 transition-transform duration-700 text-white">
                     <div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors"></div>
                     <div class="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/90 to-transparent">
                         <h3 class="font-playfair text-2xl font-bold text-white mb-1">Active Family Space</h3>
@@ -534,7 +539,8 @@
     <script>
         lucide.createIcons();
 
-        // Path logic for GitHub: files are in the root alongside index.html
+        // PATH CONFIGURATION
+        // Images are in the root alongside index.html
         const imageFolder = './'; 
 
         const fixImagePath = (path) => {
